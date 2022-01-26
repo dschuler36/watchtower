@@ -21,7 +21,6 @@ def upgrade():
         'datasets',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('name', sa.String(50), nullable=False),
-        sa.Column('storage_platform', sa.String(50), nullable=False),
         sa.Column('notification_email', sa.String(100))
     )
 

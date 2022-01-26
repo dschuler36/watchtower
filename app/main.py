@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.api import api_router
 from app.core.config import settings
+import app.core.db_models
 
 
 def get_application():
@@ -17,6 +18,6 @@ def get_application():
 
     return _app
 
-
+# db_models.Base.metadata.create_all(bind=engine)
 app = get_application()
 app.include_router(api_router, prefix="/v1")
