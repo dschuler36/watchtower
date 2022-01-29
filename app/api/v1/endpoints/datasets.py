@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from fastapi import APIRouter
 from app.core import db_crud
+from app.core.anomaly_detection import knn_scan
 from app.core.models.dataset import Dataset, AggUpdate
 from app.database import get_db
 from fastapi import Depends
@@ -26,3 +27,8 @@ def create_dataset(dataset: Dataset, db: Session = Depends(get_db)):
 @router.post("/agg_update/")
 def add_agg_update(aggs: AggUpdate, db: Session = Depends(get_db)):
     return db_crud.insert_agg_value(db, aggs)
+
+
+@router.post("/perform_scan/")
+def perform_scan(dataset_name: str, db: Session = Depends(get_db)):
+    return knn_scan(dataset_name, db)

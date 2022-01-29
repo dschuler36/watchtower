@@ -1,3 +1,4 @@
+import pandas as pd
 from sqlalchemy.orm import Session
 from app.core import db_models 
 from app.core.models.dataset import Dataset, AggUpdate
@@ -41,6 +42,15 @@ def create_agg_table(db: Session, dataset: Dataset):
                   *columns)
     table.create()
     return
+
+
+def get_aggs(db: Session, dataset_name: str):
+    table = _get_dynamic_table(db, dataset_name)
+    return db.query(table).all()
+
+
+def get_agg_as_pdf(db: Session, dataset_name: str):
+    return pd.read_sql_table(dataset_name, db.bind)
 
 
 def _get_dynamic_table(db: Session, table_name: str):
