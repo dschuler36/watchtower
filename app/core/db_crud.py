@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.core import db_models 
 from app.core.models.dataset import Dataset, AggUpdate
 from sqlalchemy import Table, Column, Integer, String, Float, MetaData
+from fastapi import HTTPException
 
 
 def get_dataset_by_id(db: Session, dataset_id: int):
@@ -14,11 +15,21 @@ def get_dataset_by_name(db: Session, name: str):
 
 
 def create_dataset(db: Session, dataset: Dataset):
-    db_dataset = db_models.Dataset(dataset.name, dataset.notification_email)
-    db.add(db_dataset)
-    db.commit()
-    db.refresh(db_dataset)
-    create_agg_table(db, dataset)
+    try:
+        create_agg_table(db, dataset)
+    except Exception as e:
+        raise HTTPException(status_code=422,
+                            detail=f"Problem creating agg table for {dataset}. Error: {e}")
+
+    try:
+        db_dataset = db_models.Dataset(dataset.name, dataset.notification_email)
+        db.add(db_dataset)
+        db.commit()
+        db.refresh(db_dataset)
+    except Exception as e:
+        raise HTTPException(status_code=422,
+                            detail=f"Problem inserting new dataset record into dataset table. Error: {e}")
+
     return db_dataset
 
 
