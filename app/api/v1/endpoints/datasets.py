@@ -11,11 +11,6 @@ from sqlalchemy.orm import Session
 router = APIRouter()
 
 
-@router.get("/dataset/{dataset_name}", response_model=Dataset)
-def get_dataset_by_name(dataset_name: str, db: Session = Depends(get_db)):
-    return db_crud.get_dataset_by_name(db, dataset_name)
-
-
 @router.post("/dataset/")
 def create_dataset(dataset: Dataset, db: Session = Depends(get_db)):
     dataset_exists = db_crud.get_dataset_by_name(db, dataset.name)
